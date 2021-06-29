@@ -1,6 +1,7 @@
 (uiop:define-package :pareto/test/package
   (:nicknames :pareto/test)
-  (:use :fiveam :pareto/package :pareto/prelude))
+  (:use :fiveam :pareto/package :pareto/prelude)
+  (:import-from :alexandria #:set-equal))
 (in-package :pareto/test/package)
 
 (def-suite pareto-tests)
@@ -34,6 +35,6 @@
 (def-test rock-paper-scissors-all-in-frontier (:suite simple-games)
   (multiple-value-bind (frontier payoffs) (compute-pareto-frontier :rock-paper-scissors nil)
     (is (= 3 (length frontier)))
-    (iter (for choice in-vector frontier)
-      (is (member choice '(:rock :paper :scissors) :test #'eq)))
+    (is (set-equal '(:rock :paper :scissors) (coerce frontier 'list)
+                   :test #'eq))
     (is (every #'zerop payoffs))))
