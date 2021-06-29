@@ -1,5 +1,6 @@
 (uiop:define-package :pareto/analytic-frontier
-  (:use :pareto/prelude :pareto/game-interface))
+  (:use :pareto/prelude :pareto/game-interface)
+  (:export #:compute-pareto-frontier))
 (in-package :pareto/analytic-frontier)
 
 (typedec #'payoff-matrix (func (t vector) payoff-matrix))
@@ -32,7 +33,7 @@
 (defun filter-within-threshold (decks payoffs target threshold)
   (iter (for deck in-vector decks)
     (for payoff in-vector payoffs)
-    (when (< (abs (- target payoff)) threshold)
+    (when (<= (abs (- target payoff)) threshold)
       (collect deck result-type vector into optimal-decks)
       (collect payoff result-type (vector payoff) into optimal-payoffs))
     (finally (return (values optimal-decks optimal-payoffs)))))
